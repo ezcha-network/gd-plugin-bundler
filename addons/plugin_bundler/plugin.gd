@@ -1,6 +1,6 @@
 @tool
 extends EditorPlugin
-## Helper plugin to bundle other plugins for distribution on the Godot Asset Store.
+## A helper plugin to bundle other plugins for distribution on the Godot Asset Store.
 
 signal _save_path_selected()
 
@@ -40,7 +40,7 @@ const _SETTINGS_MAP: Array[Dictionary] = [
 ]
 
 const _PRINT_PREFIX: String = "[Bundler] "
-const _TOOL_NAME: String = "Plugin Bundler..."
+const _TOOL_NAME: String = "Bundle Plugin..."
 
 # Lifecycle
 
@@ -56,13 +56,12 @@ func _enter_tree() -> void:
 		if (ProjectSettings.has_setting(setting["name"])): continue
 		ProjectSettings.set_setting(setting["name"], setting["value"])
 		ProjectSettings.set_initial_value(setting["name"], setting["value"])
-		var info: Dictionary = {
+		ProjectSettings.add_property_info({
 			"name": setting["name"],
 			"type": typeof(setting["value"]),
 			"hint": setting.get("hint", PROPERTY_HINT_NONE),
 			"hint_string": setting.get("hint_string", "")
-		}
-		ProjectSettings.add_property_info(info)
+		})
 	
 	# Add tool option
 	add_tool_menu_item(_TOOL_NAME, _bundle)
@@ -226,8 +225,11 @@ func _bundle() -> void:
 	OS.shell_show_in_file_manager(export_path)
 	var end_time: float = Time.get_unix_time_from_system()
 	var elapsed_time: float = end_time - start_time
-	print(_PRINT_PREFIX + "Finished bundling plugin. Elapsed time: %.2f second(s)" % [elapsed_time])
 	print(
 		_PRINT_PREFIX +
-		"If you appreciate this plugin please consider support us at https://ezcha.net/elite :)"
+		"Finished bundling the plugin. Elapsed time: %.2f second(s)." % [elapsed_time]
+	)
+	print(
+		_PRINT_PREFIX +
+		"If you appreciate this plugin please consider supporting us at https://ezcha.net/elite :)"
 	)
