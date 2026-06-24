@@ -53,8 +53,8 @@ func _disable_plugin() -> void:
 func _enter_tree() -> void:
 	# Ensure settings exist
 	for setting: Dictionary in _SETTINGS_MAP:
-		if (ProjectSettings.has_setting(setting["name"])): continue
-		ProjectSettings.set_setting(setting["name"], setting["value"])
+		if (!ProjectSettings.has_setting(setting["name"])):
+			ProjectSettings.set_setting(setting["name"], setting["value"])
 		ProjectSettings.set_initial_value(setting["name"], setting["value"])
 		ProjectSettings.add_property_info({
 			"name": setting["name"],
@@ -72,8 +72,8 @@ func _exit_tree() -> void:
 
 # Helpers
 
-func _get_setting(idx: int, default: Variant) -> Variant:
-	return ProjectSettings.get_setting(_SETTINGS_MAP[idx]["name"], "")
+func _get_setting(idx: int) -> Variant:
+	return ProjectSettings.get_setting(_SETTINGS_MAP[idx]["name"], _SETTINGS_MAP[idx]["value"])
 
 func _get_export_path(file_name: String) -> String:
 	var callback: Callable = (func(
@@ -160,11 +160,11 @@ func _bundle_dir_recursive(
 func _bundle() -> void:
 	# Get bundle settings
 	var start_time: float = Time.get_unix_time_from_system()
-	var plugin_path: String = _get_setting(_Setting.PLUGIN_PATH, "")
-	var license_path: String = _get_setting(_Setting.LICENSE_PATH, "")
-	var include_import_files: bool = _get_setting(_Setting.INCLUDE_IMPORT_FILES, true)
-	var include_uid_files: bool = _get_setting(_Setting.INCLUDE_UID_FILES, true)
-	var compression_level: int = _get_setting(_Setting.COMPRESSION_LEVEL, -1)
+	var plugin_path: String = _get_setting(_Setting.PLUGIN_PATH)
+	var license_path: String = _get_setting(_Setting.LICENSE_PATH)
+	var include_import_files: bool = _get_setting(_Setting.INCLUDE_IMPORT_FILES)
+	var include_uid_files: bool = _get_setting(_Setting.INCLUDE_UID_FILES)
+	var compression_level: int = _get_setting(_Setting.COMPRESSION_LEVEL)
 	
 	# Validate settings
 	if (plugin_path.is_empty()):
